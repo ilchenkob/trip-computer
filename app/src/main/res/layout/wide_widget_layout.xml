@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetBody"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:gravity="center|bottom"
+            android:text="Battery, V"
+            android:textColor="@color/descriptionTextColor"
+            android:textSize="@dimen/descriptionTextSize" />
+        <ImageView
+            android:id="@+id/ivVoltage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--<TextView-->
+            <!--android:id="@+id/wTxtVoltage"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="@dimen/valueBottomMargin"-->
+            <!--android:gravity="center|bottom"-->
+            <!--android:text="12.2"-->
+            <!--android:textColor="@color/valueTextColor"-->
+            <!--android:textSize="@dimen/valueTextSize" />-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:gravity="center|bottom"
+            android:text="Coolant, \u00B0C"
+            android:textColor="@color/descriptionTextColor"
+            android:textSize="@dimen/descriptionTextSize" />
+        <ImageView
+            android:id="@+id/ivTemperature"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--<TextView-->
+            <!--android:id="@+id/txtValue"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="@dimen/valueBottomMargin"-->
+            <!--android:gravity="center|bottom"-->
+            <!--android:text="73"-->
+            <!--android:textColor="@color/valueTextColor"-->
+            <!--android:textSize="@dimen/valueTextSize" />-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:gravity="center|bottom"
+            android:text="Consump., l/100"
+            android:textColor="@color/descriptionTextColor"
+            android:textSize="@dimen/descriptionTextSize" />
+        <ImageView
+            android:id="@+id/ivConsumption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--<TextView-->
+            <!--android:id="@+id/wTxtConsumption"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="@dimen/valueBottomMargin"-->
+            <!--android:gravity="center|bottom"-->
+            <!--android:text="9.4"-->
+            <!--android:textColor="@color/valueTextColor"-->
+            <!--android:textSize="@dimen/valueTextSize" />-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:gravity="center|bottom"
+            android:text="Reserve, km"
+            android:textColor="@color/descriptionTextColor"
+            android:textSize="@dimen/descriptionTextSize" />
+        <ImageView
+            android:id="@+id/ivDistance"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--<TextView-->
+            <!--android:id="@+id/wTxtDistance"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="@dimen/valueBottomMargin"-->
+            <!--android:gravity="center|bottom"-->
+            <!--android:text="323"-->
+            <!--android:textColor="@color/valueTextColor"-->
+            <!--android:textSize="@dimen/valueTextSize" />-->
+    </RelativeLayout>
+</android.widget.LinearLayout>
