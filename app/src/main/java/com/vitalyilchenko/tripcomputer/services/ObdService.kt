@@ -45,13 +45,15 @@ object ObdService {
                 var socket = ConnectionManager.getSocket()!!
                 result.engineTemperature = getEngineTemperature(socket)
                 result.voltage = getVoltage(socket)
-//                var currentFuelLevel = getFuelLevel(socket)
-//                var mafValue = getMaf(socket)
-//                var currentSpeed = getSpeed(socket)
 
-                //TODO: calculate statistics
-                result.fuelConsumption = "--"
-                result.reserve = "--"
+                var mafValue = getMaf(socket)
+                var currentSpeed = getSpeed(socket)
+                ConsumptionManager.addValues(mafValue, currentSpeed)
+
+                var currentFuelLevel = getFuelLevel(socket)
+
+                result.fuelConsumption = ConsumptionManager.getAverageConsumption()
+                result.reserve = ConsumptionManager.getReserveDistance(currentFuelLevel).toString()
 
                 faultedTriesCount = 0
             } catch (e: Exception) {

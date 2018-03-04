@@ -18,7 +18,9 @@ import com.vitalyilchenko.tripcomputer.services.ConnectionManager
 import android.support.v4.content.LocalBroadcastManager
 import android.content.IntentFilter
 import android.graphics.Typeface
+import android.util.Log
 import com.vitalyilchenko.tripcomputer.Models.*
+import com.vitalyilchenko.tripcomputer.services.ConsumptionManager
 import com.vitalyilchenko.tripcomputer.services.ObdService
 import com.vitalyilchenko.tripcomputer.services.TripComputerService
 import java.lang.Integer.parseInt
@@ -45,7 +47,7 @@ class Dashboard : AppCompatActivity() {
         connectionButton?.setOnClickListener { _ -> showConnectionDialog() }
 
         var abtn = this.findViewById<Button>(R.id.btnReset)
-        abtn?.setOnClickListener { _ -> ObdService.getData(this) }
+        abtn?.setOnClickListener { _ -> Log.i("Dashboard", "Reset clicked")}
 
         txtDeviceName = this.findViewById<TextView>(R.id.txtDeviceName)
         txtState = this.findViewById<TextView>(R.id.txtState)
