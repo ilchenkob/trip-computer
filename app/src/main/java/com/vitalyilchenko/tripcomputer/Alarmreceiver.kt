@@ -19,7 +19,7 @@ class TripAlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        val REQUEST_CODE = 12345
+        val REQUEST_CODE = 901188
         val ACTION = "com.vitaliiilchenko.tripcomputer.alarm"
     }
 }

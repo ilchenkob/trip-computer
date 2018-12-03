@@ -46,8 +46,8 @@ class Dashboard : AppCompatActivity() {
         connectionButton = this.findViewById<Button>(R.id.btnConnect)
         connectionButton?.setOnClickListener { _ -> showConnectionDialog() }
 
-        var abtn = this.findViewById<Button>(R.id.btnReset)
-        abtn?.setOnClickListener { _ -> Log.i("Dashboard", "Reset clicked")}
+        var resetButton = this.findViewById<Button>(R.id.btnReset)
+        resetButton?.setOnClickListener { _ -> ConsumptionManager.reset() }
 
         txtDeviceName = this.findViewById<TextView>(R.id.txtDeviceName)
         txtState = this.findViewById<TextView>(R.id.txtState)
@@ -75,7 +75,7 @@ class Dashboard : AppCompatActivity() {
         if (obdDeviceAddress.isEmpty()) {
             showConnectionDialog()
         } else {
-            scheduleAlarm()
+            runTripComputerService()
         }
     }
 
@@ -93,7 +93,7 @@ class Dashboard : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tripUpdateReceiver);
     }
 
-    private fun scheduleAlarm() {
+    private fun runTripComputerService() {
         var intent = Intent(applicationContext, TripComputerService::class.java)
         intent.action = TripComputerService.START_SERVICE_ACTION
         startService(intent)
@@ -104,10 +104,10 @@ class Dashboard : AppCompatActivity() {
         obdDeviceAddress = prefs.getString(PreferencesKeys.ObdDeviceAddress, "");
         if (obdDeviceAddress.isEmpty()) {
             connectionButton?.text = "Connect"
-            connectionButton?.setOnClickListener { view -> showConnectionDialog() }
+            connectionButton?.setOnClickListener { _ -> showConnectionDialog() }
         } else {
             connectionButton?.text = "Disconnect"
-            connectionButton?.setOnClickListener { view -> showDisconnectionDialog() }
+            connectionButton?.setOnClickListener { _ -> showDisconnectionDialog() }
         }
     }
 
@@ -116,7 +116,7 @@ class Dashboard : AppCompatActivity() {
         alertBuilder.setTitle("Are you sure?")
         alertBuilder.setMessage("ELM327 will be paired with your Android, but this application will lose connection with it")
         var dialog = alertBuilder.create()
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "DISCONNECT", { dialog, index ->
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "DISCONNECT", { d, _ ->
             val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
             var editor = prefs.edit()
             editor.putString(PreferencesKeys.ObdDeviceName, "")
@@ -126,11 +126,11 @@ class Dashboard : AppCompatActivity() {
             ConnectionManager.disconnect()
             updateConnectionButtonState()
 
-            dialog.dismiss()
+            d.dismiss()
         })
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", { dialog, index ->
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", { d, _ ->
             updateConnectionButtonState()
-            dialog.dismiss()
+            d.dismiss()
         })
         dialog.show()
     }
@@ -142,22 +142,22 @@ class Dashboard : AppCompatActivity() {
             var pairedDevices = btAdapter.bondedDevices.toMutableList();
             var pairedDeviceStrings = pairedDevices.map { device -> device.name }.toTypedArray()
             var alertBuilder = AlertDialog.Builder(this);
-            alertBuilder.setSingleChoiceItems(pairedDeviceStrings, -1, { dialog: DialogInterface, index: Int ->
+            alertBuilder.setSingleChoiceItems(pairedDeviceStrings, -1, { _, index: Int ->
                 selectedDevice = pairedDevices[index]
             })
             alertBuilder.setTitle("Select ELM327 device")
             var dialog = alertBuilder.create()
-            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "CONNECT", { dialog, index ->
+            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "CONNECT", { d, _ ->
                 if (selectedDevice != null) {
                     connectToDevice(selectedDevice!!.name, selectedDevice!!.address)
                 }
 
                 updateConnectionButtonState()
-                dialog.dismiss()
+                d.dismiss()
             })
-            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", { dialog, index ->
+            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL", { d, _ ->
                 updateConnectionButtonState()
-                dialog.dismiss()
+                d.dismiss()
             })
             dialog.show()
         }
@@ -172,7 +172,7 @@ class Dashboard : AppCompatActivity() {
 
         txtDeviceName?.text = name
 
-        scheduleAlarm()
+        runTripComputerService()
     }
 }
 

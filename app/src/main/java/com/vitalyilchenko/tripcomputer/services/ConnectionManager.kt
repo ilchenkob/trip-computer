@@ -35,8 +35,7 @@ object ConnectionManager {
     fun connectToDevice(address: String): Boolean {
         var btAdapter = BluetoothAdapter.getDefaultAdapter()
         if (btAdapter != null && btAdapter.isEnabled) {
-            var pairedDevices = btAdapter.bondedDevices;
-            var device = pairedDevices.find{ device -> device.address.equals(address, true) }
+            var device = btAdapter.bondedDevices.find{ d -> d.address.equals(address, true) }
             if (device == null)
                 return false
 

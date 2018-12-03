@@ -14,9 +14,9 @@ import java.util.*
 object ObdService {
 
     private const val responseDelayInMs = 100L
-    private const val requestDelayInMs = 200L
+    private const val requestDelayInMs = 100L
 
-    private val fuelLevelRate: Float = 23.6f
+    // private val fuelLevelRate: Float = 23.6f
     // (L/100) = fuelLevelRate * deltaFuelLevel / distance
     // (reserve km) = fuelLevelRate * currentFuelLevel / (L/100)
 
@@ -43,19 +43,22 @@ object ObdService {
                 result.state = ConnectionState.Connected
 
                 var socket = ConnectionManager.getSocket()!!
-                result.engineTemperature = getEngineTemperature(socket)
-                result.voltage = getVoltage(socket)
 
-                var mafValue = getMaf(socket)
-                var currentSpeed = getSpeed(socket)
-                ConsumptionManager.addValues(mafValue, currentSpeed)
+                if (socket.isConnected) {
+                    result.engineTemperature = getEngineTemperature(socket)
+                    result.voltage = getVoltage(socket)
 
-                var currentFuelLevel = getFuelLevel(socket)
+                    var mafValue = getMaf(socket)
+                    var currentSpeed = getSpeed(socket)
+                    ConsumptionManager.addValues(mafValue, currentSpeed)
 
-                result.fuelConsumption = ConsumptionManager.getAverageConsumption()
-                result.reserve = ConsumptionManager.getReserveDistance(currentFuelLevel).toString()
+                    var currentFuelLevel = getFuelLevel(socket)
 
-                faultedTriesCount = 0
+                    result.fuelConsumption = ConsumptionManager.getAverageConsumption()
+                    result.reserve = ConsumptionManager.getReserveDistance(currentFuelLevel).toString()
+
+                    faultedTriesCount = 0
+                }
             } catch (e: Exception) {
                 faultedTriesCount++
                 Log.e("Trip_ObdService", e.message)
@@ -63,6 +66,7 @@ object ObdService {
                 result.engineTemperature = "--"
                 result.voltage = "--"
                 result.fuelConsumption = "--"
+                result.reserve = "--"
             }
         }
 
@@ -75,8 +79,9 @@ object ObdService {
             }
         }
 
-        var minutes = Calendar.getInstance().get(Calendar.MINUTE)
-        var seconds = Calendar.getInstance().get(Calendar.SECOND)
+        val calendar = Calendar.getInstance();
+        var minutes = calendar.get(Calendar.MINUTE)
+        var seconds = calendar.get(Calendar.SECOND)
         result.timestamp = "${minutes} : ${seconds}"
 
         return result

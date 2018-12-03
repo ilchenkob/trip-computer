@@ -20,20 +20,21 @@ import android.util.TypedValue
 import com.vitalyilchenko.tripcomputer.Models.IntentParams
 import com.vitalyilchenko.tripcomputer.Models.TripData
 
-
 /**
  * Created by vitalyilchenko on 2/25/18.
  */
+
 // Must create a default constructor
 class TripComputerService : IntentService("TripComputerService") {
 
-    private var triggerIntervalSec: Long = 7
     private var pIntent: PendingIntent? = null
     private var alarmManager: AlarmManager? = null
 
     companion object {
         @JvmStatic val ACTION = "com.vitaliiilchenko.tripcomputer.obdupdate"
-        val START_SERVICE_ACTION = "com.vitaliiilchenko.tripcomputer.startservice"
+        const val START_SERVICE_ACTION = "com.vitaliiilchenko.tripcomputer.startservice"
+
+        const val TriggerIntervalSec = 6L
     }
 
     fun startService() {
@@ -45,7 +46,7 @@ class TripComputerService : IntentService("TripComputerService") {
         alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP,
                 SystemClock.elapsedRealtime() + 5000,
-                triggerIntervalSec * 1000, pIntent)
+                TriggerIntervalSec * 1000, pIntent)
     }
 
     fun stopService() {
@@ -79,16 +80,16 @@ class TripComputerService : IntentService("TripComputerService") {
 
         var tripData = ObdService.getData(this.applicationContext)
 
-        val intent = Intent(ACTION)
-        intent.putExtra(IntentParams.ResultCode, Activity.RESULT_OK)
-        intent.putExtra(IntentParams.EngineTemp, tripData.engineTemperature)
-        intent.putExtra(IntentParams.Consumption, tripData.fuelConsumption)
-        intent.putExtra(IntentParams.Reserve, tripData.reserve)
-        intent.putExtra(IntentParams.State, tripData.state.toString())
-        intent.putExtra(IntentParams.DistanceCovered, "N/A")
-        intent.putExtra(IntentParams.Voltage, tripData.voltage)
+        val obdUpdateIntent = Intent(ACTION)
+        obdUpdateIntent.putExtra(IntentParams.ResultCode, Activity.RESULT_OK)
+        obdUpdateIntent.putExtra(IntentParams.EngineTemp, tripData.engineTemperature)
+        obdUpdateIntent.putExtra(IntentParams.Consumption, tripData.fuelConsumption)
+        obdUpdateIntent.putExtra(IntentParams.Reserve, tripData.reserve)
+        obdUpdateIntent.putExtra(IntentParams.State, tripData.state.toString())
+        obdUpdateIntent.putExtra(IntentParams.DistanceCovered, "N/A")
+        obdUpdateIntent.putExtra(IntentParams.Voltage, tripData.voltage)
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(obdUpdateIntent)
 
         // Update widget
         val remoteViews = RemoteViews(this.applicationContext.packageName, R.layout.wide_widget_layout)
@@ -108,41 +109,39 @@ class TripComputerService : IntentService("TripComputerService") {
     private val textX = 340f
     private val textY = 462f
     private val textSize = 380f
+    private val fontFilename = "fonts/digital7_mono.ttf"
     private val textColor = Color.parseColor("#FCFCFC")
 
     private fun convertToImg(text: String, context: Context): Bitmap {
-        val btmText = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+        val btmText = createBitmap()
         val cnvText = Canvas(btmText)
-
-        val tf = Typeface.createFromAsset(context.assets, "fonts/digital7_mono.ttf")
-
-        val paint = Paint()
-        paint.setAntiAlias(true)
-        paint.setSubpixelText(true)
-        paint.setTypeface(tf)
-        paint.setColor(textColor)
-        paint.setTextSize(textSize)
-        paint.textAlign = Paint.Align.CENTER
+        val paint = createTextPaint(context)
 
         cnvText.drawText(text, textX, textY, paint)
         return btmText
     }
 
     private fun convertVoltToImg(text: String, context: Context): Bitmap {
-        val btmText = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+        val btmText = createBitmap()
         val cnvText = Canvas(btmText)
-
-        val tf = Typeface.createFromAsset(context.assets, "fonts/digital7_mono.ttf")
-
-        val paint = Paint()
-        paint.setAntiAlias(true)
-        paint.setSubpixelText(true)
-        paint.setTypeface(tf)
-        paint.setColor(textColor)
-        paint.setTextSize(textSize)
-        paint.textAlign = Paint.Align.CENTER
+        val paint = createTextPaint(context)
 
         cnvText.drawText(text, textX - 28f, textY, paint)
         return btmText
+    }
+
+    private fun createBitmap(): Bitmap {
+        return Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+    }
+
+    private fun createTextPaint(context: Context): Paint {
+        val paint = Paint()
+        paint.isAntiAlias = true
+        paint.isSubpixelText = true
+        paint.typeface = Typeface.createFromAsset(context.assets, fontFilename)
+        paint.color = textColor
+        paint.textSize = textSize
+        paint.textAlign = Paint.Align.CENTER
+        return paint
     }
 }

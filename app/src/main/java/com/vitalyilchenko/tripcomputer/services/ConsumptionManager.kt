@@ -6,19 +6,33 @@ package com.vitalyilchenko.tripcomputer.services
 object  ConsumptionManager {
 
     private const val degreeInLiters = 0.235
-    private const val itemsCount = 43 // 43 frames taken every 7 second gives data for the last 5 minutes of road
+    private const val grPerSecToLitPerHourConst: Double = 32.8722093
+
+    private val itemsCount = (300 / TripComputerService.TriggerIntervalSec).toInt()
+                             // (5 mins * 60) = 300
 
     private val data: DoubleArray = DoubleArray(itemsCount, { 10.0 })
     private var currentIndex: Int = 0
 
-    fun addValues(mafValue: Double, speedValue: Int) {
-        val mpgConstant = 71.07
-        val gallonToLiter = 378.5411784
-        val milesToKm = 1.609344
+    fun reset() {
+        data.forEachIndexed { index, _ -> data[index] = 10.0 }
+    }
 
-        var currentSpeed: Double = if (speedValue > 1) speedValue.toDouble() else 0.5
-        var mpg: Double = (mpgConstant * speedValue) / mafValue
-        var currentConsumption: Double = gallonToLiter / (milesToKm * mpg)
+    fun addValues(mafValue: Double, speedValue: Int) {
+        var currentConsumption: Double = 15.0 // in case when current speed = 0
+
+        if (speedValue > 5) {
+//            val mpgConstant = 71.07
+//            val gallonToLiter = 378.5411784
+//            val milesToKm = 1.609344
+
+//            var currentSpeed: Double = if (speedValue > 1) speedValue.toDouble() else 1.0
+//            var mpg: Double = (mpgConstant * currentSpeed) / mafValue
+//            currentConsumption = gallonToLiter / (milesToKm * mpg)
+
+            var currentSpeed: Double = speedValue.toDouble()
+            currentConsumption = (mafValue * grPerSecToLitPerHourConst) / currentSpeed
+        }
 
         data[currentIndex++] = currentConsumption
         if (currentIndex == itemsCount)
